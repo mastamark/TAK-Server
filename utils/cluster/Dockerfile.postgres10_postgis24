@@ -1,8 +1,11 @@
 FROM postgres:10.6
-# this is slow - updates all packages
+
+# Install postgresql-10-postgis-2.4
 RUN apt-get update && apt install -y postgresql-10-postgis-2.4
 
-# install openjdk 11
-RUN echo 'deb http://ftp.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/pgdg.list && \
+# Add missing gpg keys for stretch-backports, add repo, install openjdk 11
+RUN gpg --no-tty --keyserver pgp.mit.edu --recv-keys 0E98404D386FA1D9 && \
+	gpg --no-tty --armor --export 0E98404D386FA1D9 | apt-key add - && \
+	echo 'deb http://ftp.debian.org/debian stretch-backports main' > /etc/apt/sources.list.d/pgdg.list && \
 	apt update && \
 	apt-get -y -t stretch-backports install openjdk-11-jdk
